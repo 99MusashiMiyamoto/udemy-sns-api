@@ -27,14 +27,14 @@ model Post {
   id        Int      @id @default(autoincrement())
   content   String
   createdAt DateTime @default(now())
-  authorid  Int
-  author    User     @relation("UserToPost", fields: [authorid], references: [id])
+  authorId  Int
+  author    User     @relation("UserToPost", fields: [authorId], references: [id])
 }
 
 model Profile {
   id              Int     @id @default(autoincrement())
   bio             String?
   profileImageUrl String?
-  userid          Int     @unique
-  user            User    @relation("UserToProfile", fields: [userid], references: [id])
+  userId          Int     @unique
+  user            User    @relation("UserToProfile", fields: [userId], references: [id])
 }

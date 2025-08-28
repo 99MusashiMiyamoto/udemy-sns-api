@@ -12,7 +12,9 @@ const userRoute = require('./routers/users');
 
 require('dotenv').config();
 
-
+//ローカル
+// const PORT = 5000
+// デプロイ
 const PORT = process.env.PORT || 10000;
 
 app.use(cors());
