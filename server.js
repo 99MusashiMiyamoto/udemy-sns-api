@@ -11,7 +11,13 @@ const cors = require('cors');
 // デプロイ
 const PORT = process.env.PORT || 10000;
 
-app.use(cors());
+// CORS設定
+const corsOptions = {
+  origin: "https://udemy-sns-client-eta.vercel.app",
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
