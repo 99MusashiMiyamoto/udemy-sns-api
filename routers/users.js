@@ -6,7 +6,7 @@ const  isAuthenticated  = require("../middlewares/isAuthenticated");
 router.get("/find", isAuthenticated, async (req, res) => {
     try {
         const user = await prisma.user.findUnique({
-            where: { id: req.user.id }, // req.userId を req.user.id に修正
+            where: { id: req.user.id },
             include: {
                 profile: true,
             },
@@ -16,7 +16,6 @@ router.get("/find", isAuthenticated, async (req, res) => {
             return res.status(404).json({ error: "ユーザーが見つかりませんでした。" });
         }
 
-        // パスワードはレスポンスに含めないように注意
         const { password, ...userWithoutPassword } = user;
 
         res.status(200).json({ user: userWithoutPassword });
@@ -44,11 +43,9 @@ router.get("/profile/:userId", async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-    // レスポンスからパスワードを削除
     const sanitizedUser = {
       ...user,
       posts: user.posts.map(post => {
-        // ネストされたauthorからもパスワードを削除
         const { password: _authorPassword, ...authorWithoutPassword } = post.author;
         return { ...post, author: authorWithoutPassword };
       })
@@ -59,6 +56,36 @@ router.get("/profile/:userId", async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server Error" });
+    }
+});
+
+// プロフィール編集用API
+router.put("/profile", isAuthenticated, async (req, res) => {
+    const { bio, username } = req.body;
+    const userId = req.user.id;
+
+    try {
+        const updatedUser = await prisma.$transaction([
+            prisma.user.update({
+                where: { id: userId },
+                data: { username },
+            }),
+            prisma.profile.upsert({
+                where: { userid: userId },
+                create: {
+                    userid: userId,
+                    bio,
+                },
+                update: {
+                    bio,
+                },
+            }),
+        ]);
+
+        res.status(200).json(updatedUser);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: err.message });
     }
 });
 
