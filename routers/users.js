@@ -6,7 +6,7 @@ const  isAuthenticated  = require("../middlewares/isAuthenticated");
 router.get("/find", isAuthenticated, async (req, res) => {
     try {
         const user = await prisma.user.findUnique({
-            where: { id: req.userId },
+            where: { id: req.user.id }, // req.userId を req.user.id に修正
             include: {
                 profile: true,
             },
