@@ -17,22 +17,8 @@ const allowedOrigins = [
   'https://udemy-sns-client-99b3xv6zs-mmiyamotos-projects.vercel.app'
 ];
 
-// CORS設定
-const corsOptions = {
-  origin: function (origin, callback) {
-    // デバッグ用にオリジンをログに出力
-    console.log("CORS check for origin:", origin);
-
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
+// CORS設定をライブラリ推奨のシンプルな形式に変更
+app.use(cors({ origin: allowedOrigins }));
 
 app.use(express.json());
 
