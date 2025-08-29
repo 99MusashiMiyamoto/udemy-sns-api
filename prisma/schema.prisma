@@ -15,11 +15,12 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   username String
-  email    String @unique
+  email    String   @unique
   password String
-  posts    Post[]
+  posts    Post[]   @relation("UserToPost")
+  profile  Profile? @relation("UserToProfile")
 }
 
 model Post {
@@ -27,5 +28,13 @@ model Post {
   content   String
   createdAt DateTime @default(now())
   authorid  Int
-  author    User     @relation(fields: [authorid], references: [id])
+  author    User     @relation("UserToPost", fields: [authorid], references: [id])
+}
+
+model Profile {
+  id              Int     @id @default(autoincrement())
+  bio             String?
+  profileImageUrl String?
+  userid          Int     @unique
+  user            User    @relation("UserToProfile", fields: [userid], references: [id])
 }
