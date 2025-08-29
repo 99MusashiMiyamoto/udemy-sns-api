@@ -20,7 +20,9 @@ const allowedOrigins = [
 // CORS設定
 const corsOptions = {
   origin: function (origin, callback) {
-    //許可リストにないオリジンからのリクエスト、またはオリジンがないリクエスト（Postmanなど）を許可する
+    // デバッグ用にオリジンをログに出力
+    console.log("CORS check for origin:", origin);
+
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
