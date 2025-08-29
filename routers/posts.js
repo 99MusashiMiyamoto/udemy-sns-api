@@ -15,7 +15,7 @@ router.post("/", isAuthenticated, async (req, res) => {
         const newPost = await prisma.post.create({
             data: {
                 content,
-                authorId: req.user.id,
+                authorid: req.user.id, // authorId を authorid に修正
             },
             include: {
                 author: {
@@ -61,7 +61,7 @@ router.get("/:userId", async (req, res) => {
 try {
     const posts = await prisma.post.findMany({
         where: {
-            authorId: parseInt(userId),
+            authorid: parseInt(userId), // authorId を authorid に修正
         },
         orderBy: {
             createdAt: "desc",
