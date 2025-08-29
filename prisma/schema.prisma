@@ -21,6 +21,7 @@ model User {
   password String
   posts    Post[]   @relation("UserToPost")
   profile  Profile? @relation("UserToProfile")
+  likes    Like[]
 }
 
 model Post {
@@ -29,6 +30,7 @@ model Post {
   createdAt DateTime @default(now())
   authorid  Int
   author    User     @relation("UserToPost", fields: [authorid], references: [id])
+  likes     Like[]
 }
 
 model Profile {
@@ -37,4 +39,14 @@ model Profile {
   profileImageUrl String?
   userid          Int     @unique
   user            User    @relation("UserToProfile", fields: [userid], references: [id])
+}
+
+model Like {
+  id      Int   @id @default(autoincrement())
+  userId  Int
+  postId  Int
+  user    User  @relation(fields: [userId], references: [id])
+  post    Post  @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId])
 }

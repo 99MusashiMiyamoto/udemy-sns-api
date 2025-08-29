@@ -45,12 +45,12 @@ router.get("/profile/:userId", async (req, res) => {
 
     const sanitizedUser = {
       ...user,
+      password: undefined,
       posts: user.posts.map(post => {
         const { password: _authorPassword, ...authorWithoutPassword } = post.author;
         return { ...post, author: authorWithoutPassword };
       })
     };
-    delete sanitizedUser.password;
 
     res.status(200).json(sanitizedUser);
     } catch (error) {

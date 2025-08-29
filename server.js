@@ -11,14 +11,23 @@ const cors = require('cors');
 // デプロイ
 const PORT = process.env.PORT || 10000;
 
-// 許可するオリジンのリスト
+// 許可するオリジン
 const allowedOrigins = [
   'https://udemy-sns-client-eta.vercel.app',
-  'https://udemy-sns-client-99b3xv6zs-mmiyamotos-projects.vercel.app'
+  'https://udemy-sns-client-99b3xv6zs-mmiyamotos-projects.vercel.app',
+  'http://localhost:3000'
 ];
 
-// CORS設定をライブラリ推奨のシンプルな形式に変更
-app.use(cors({ origin: allowedOrigins }));
+// 動的CORS判定（VercelのプレビューURL *.vercel.app にも対応）
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // 同一オリジン/ヘルスチェックなど
+    const isAllowed =
+      allowedOrigins.includes(origin) ||
+      /\.vercel\.app$/.test(new URL(origin).hostname);
+    callback(isAllowed ? null : new Error('Not allowed by CORS'), isAllowed);
+  },
+}));
 
 app.use(express.json());
 
